@@ -1,0 +1,26 @@
+{
+    "entryFile": "src/main.ts",
+    "controllerPathGlobs": [
+      "src/**/*.controller.ts"
+    ],
+    "noImplicitAdditionalProperties": "throw-on-extras",
+    "spec": {
+      "outputDirectory": "public",
+      "specVersion": 3,
+      "schemes": [
+        "http",
+        "https"
+      ],
+      "securityDefinitions": {
+        "jwtAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT",
+          "description": "Bearer token to access these API endpoints"
+        }
+      }
+    },
+    "routes": {
+      "routesDir": "build"
+    }
+  }
