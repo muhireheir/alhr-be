@@ -3,6 +3,7 @@ import swaggerUi from 'swagger-ui-express'
 import router from './routes/index.route'
 import cors from 'cors'
 import { appEnv } from './utils/env'
+import dbConnection from './config/db'
 
 const app = express()
 app.use(express.json())
@@ -18,6 +19,9 @@ app.use(
   })
 )
 app.use(router)
-app.listen(appEnv.PORT, () => {
+void dbConnection().then(() => {
+  app.listen(appEnv.PORT)
   console.log(`App is running on port ${appEnv.PORT}`)
+}).catch(error => {
+  console.log(error)
 })
