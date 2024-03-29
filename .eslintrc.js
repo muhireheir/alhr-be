@@ -24,6 +24,13 @@ module.exports = {
     "rules": {
         "space-before-function-paren": "off",
         "@typescript-eslint/space-before-function-paren": "off",
-        "@typescript-eslint/no-unsafe-argument": "off"
+        "@typescript-eslint/no-unsafe-argument": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-misused-promises": [
+            "error",
+            {
+                "checksVoidReturn": false
+            }
+        ]
     }
 }
