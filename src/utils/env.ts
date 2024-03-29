@@ -3,5 +3,6 @@ dotenv.config()
 
 export const appEnv = {
   PORT: process.env.PORT ?? 8765,
-  DATABASE_URL: process.env.DB_CONNECTION_STRING
+  DATABASE_URL: process.env.DB_CONNECTION_STRING,
+  SALT_ROUNDS: 10
 }
