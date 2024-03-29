@@ -7,13 +7,62 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"IWelcomeResponse": {
+			"IMessageResponse": {
 				"properties": {
 					"message": {
 						"type": "string"
 					}
 				},
 				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"createAccountDto": {
+				"properties": {
+					"firstName": {
+						"type": "string"
+					},
+					"lastName": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					},
+					"confirmPassword": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"firstName",
+					"lastName",
+					"email",
+					"password",
+					"confirmPassword"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"VerifyAccountResponseDto": {
+				"properties": {
+					"token": {
+						"type": "string",
+						"nullable": true
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"token",
+					"success",
 					"message"
 				],
 				"type": "object",
@@ -50,7 +99,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/IWelcomeResponse"
+									"$ref": "#/components/schemas/IMessageResponse"
 								}
 							}
 						}
@@ -61,6 +110,69 @@
 				],
 				"security": [],
 				"parameters": []
+			}
+		},
+		"/api/auth/signup": {
+			"post": {
+				"operationId": "Signup",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IMessageResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Authentication"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/createAccountDto"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/auth/verify": {
+			"get": {
+				"operationId": "VerifyAccount",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/VerifyAccountResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Authentication"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "token",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		}
 	},
