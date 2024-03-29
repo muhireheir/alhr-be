@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const createAccountSchema = z.object({
+export const createAccountSchema = z.object({
   body: z.object({
     firstName: z.string(),
     lastName: z.string(),
@@ -10,6 +10,13 @@ const createAccountSchema = z.object({
   }).refine(data => data.password === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"]
+  })
+});
+
+export const loginSchema = z.object({
+  body: z.object({
+    email: z.string().email(),
+    password: z.string().min(6),
   })
 });
 

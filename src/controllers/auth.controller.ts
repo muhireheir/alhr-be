@@ -7,7 +7,7 @@ import {
   Get,
   Query
 } from 'tsoa'
-import { LoginResponseDto, VerifyAccountResponseDto, createAccountDto } from '../types/dto/auth.dto'
+import { LoginDto, LoginResponseDto, VerifyAccountResponseDto, createAccountDto } from '../types/dto/auth.dto'
 import AuthService from '../services/auth.service';
 import { IMessageResponse } from '../types/common';
 interface Ic {
@@ -23,5 +23,10 @@ export class AuthController extends Controller {
   @Get("/verify")
   public static async verifyAccount(@Query('token') token: string | undefined): Promise<VerifyAccountResponseDto> {
     return (await AuthService.verifyAccount(token));
+  }
+
+  @Post("/login")
+  public static async login(@Body() data: LoginDto): Promise<LoginResponseDto> {
+    return (await AuthService.login(data))
   }
 }
