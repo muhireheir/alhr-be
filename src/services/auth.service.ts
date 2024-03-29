@@ -1,10 +1,10 @@
 import { User } from "../models/User";
 import { IMessageResponse } from "../types/common";
-import { VerifyAccountResponseDto, createAccountDto } from "../types/dto/auth.dto";
+import { LoginDto, LoginResponseDto, VerifyAccountResponseDto, createAccountDto } from "../types/dto/auth.dto";
 import { appEnv } from "../utils/env";
 import { generateToken, verifyToken } from "../utils/jwt";
 import { sendEmail } from "../utils/mailer";
-import { generatePassword } from "../utils/password";
+import { generatePassword, passwordsMatch } from "../utils/password";
 import UserService from "./user.service";
 
 class AuthService {
@@ -15,9 +15,7 @@ class AuthService {
     }
     const password = await generatePassword(userInfo.password);
     const createdUser = await User.create({ ...userInfo, password });
-    const token = await generateToken({ accountId: createdUser._id as unknown as string }, "2h");
-    const confirmationLink = `${appEnv.APP_URL}/api/auth/verify?token=${token}`;
-    await sendEmail({ receiver: createdUser.email, templateId: appEnv.VERIFY_EMAIL_TEMPLATE!, templateData: { confirmationLink } })
+    AuthService.sendVerificationEmail(createdUser.email, createdUser._id as unknown as string);
     return { message: "Account created! please check your email for verification" };
   }
   public static async verifyAccount(token: string | undefined): Promise<VerifyAccountResponseDto> {
@@ -32,6 +30,26 @@ class AuthService {
     await User.updateOne({ _id: user._id }, { isVerified: true });
     const userToken = await generateToken({ accountId: user._id as unknown as string }, "24h");
     return { success: true, token: userToken, message: 'Verified successfuly' }
+  }
+  public static async sendVerificationEmail(email: string, id: string): Promise<void> {
+    const token = await generateToken({ accountId: id as unknown as string }, "2h");
+    const confirmationLink = `${appEnv.APP_URL}/api/auth/verify?token=${token}`;
+    await sendEmail({ receiver: email, templateId: appEnv.VERIFY_EMAIL_TEMPLATE!, templateData: { confirmationLink } })
+  }
+
+  public static async login(data: LoginDto): Promise<LoginResponseDto> {
+    const user = await UserService.getUserByEmail(data.email);
+    if (!user || (user && !await passwordsMatch(data.password, user.password))) {
+      throw new Error("Incorrect  email or password")
+    }
+    if (!user.isVerified) {
+      await AuthService.sendVerificationEmail(user.email, user._id as unknown as string);
+      throw new Error(" Please check your email for verification instructions")
+    }
+    const accessToken = await generateToken({ accountId: user._id as unknown as string }, '24h');
+    return {
+      token: accessToken
+    }
   }
 }
 

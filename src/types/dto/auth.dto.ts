@@ -8,6 +8,10 @@ export interface createAccountDto extends IUser {
 export interface LoginResponseDto {
   token: string | null
 }
+export interface LoginDto {
+  email: string;
+  password: string;
+}
 export interface VerifyAccountResponseDto extends LoginResponseDto {
   success: boolean;
   message: string
