@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { appEnv } from './env';
 
-export const generatePassword = (plainPassword: string): string => {
-  return bcrypt.hashSync(plainPassword, appEnv.SALT_ROUNDS);
+export const generatePassword = async (plainPassword: string): Promise<string> => {
+  return (await bcrypt.hash(plainPassword, appEnv.SALT_ROUNDS));
 }

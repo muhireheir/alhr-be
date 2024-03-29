@@ -4,6 +4,7 @@ import router from './routes/index.routes'
 import cors from 'cors'
 import { appEnv } from './utils/env'
 import dbConnection from './config/db'
+import { sendEmail } from './utils/mailer'
 
 const app = express()
 app.use(express.json())

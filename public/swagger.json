@@ -46,6 +46,27 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"VerifyAccountResponseDto": {
+				"properties": {
+					"token": {
+						"type": "string",
+						"nullable": true
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"token",
+					"success",
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {
@@ -121,6 +142,37 @@
 						}
 					}
 				}
+			}
+		},
+		"/api/auth/verify": {
+			"get": {
+				"operationId": "VerifyAccount",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/VerifyAccountResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Authentication"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "token",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		}
 	},

@@ -18,3 +18,12 @@ export interface IUserModel extends IUser {
   createdAt: Date;
   updatedAt: Date
 }
+
+export interface IEmail {
+  receiver: string;
+  templateId: string;
+  templateData: Record<string, string>
+}
+export interface ITokenData {
+  accountId: string
+}
