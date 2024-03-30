@@ -6,6 +6,8 @@ import { generateToken, verifyToken } from "../utils/jwt";
 import { sendEmail } from "../utils/mailer";
 import { generatePassword, passwordsMatch } from "../utils/password";
 import UserService from "./user.service";
+import { Profile } from "passport";
+import { VerifyCallback } from "passport-google-oauth20";
 
 class AuthService {
   public static async signup(userInfo: createAccountDto): Promise<IMessageResponse> {
@@ -45,6 +47,33 @@ class AuthService {
     if (!user.isVerified) {
       await AuthService.sendVerificationEmail(user.email, user._id as unknown as string);
       throw new Error(" Please check your email for verification instructions")
+    }
+    const accessToken = await generateToken({ accountId: user._id as unknown as string }, '24h');
+    return {
+      token: accessToken
+    }
+  }
+  public static async authenticateWithGoogle(profile: Profile, done: VerifyCallback) {
+    const email = profile.emails?.[0].value;
+    const user = await UserService.getUserByEmail(email!) as unknown as typeof User;
+    if (!user) {
+      const createdUser = await User.create({ passwor: null, email, profileId: profile.id, firstName: profile.displayName.split(" ")[0], lastName: profile.displayName.split(" ")[1], isVerified: true, provider: profile.provider });
+      return done(null, {
+        provider: createdUser.provider,
+        profileId: createdUser.profileId,
+        firstName: createdUser.firstName,
+        lastName: createdUser.lastName,
+        email: createdUser.email,
+        isVerified: true,
+        _id: createdUser._id.toString()
+      })
+    }
+    return done(null, user);
+  }
+  public static async LoginWithGoogle(email: string): Promise<LoginResponseDto> {
+    const user = await UserService.getUserByEmail(email!);
+    if (!user) {
+      throw new Error("Opps authentication failed")
     }
     const accessToken = await generateToken({ accountId: user._id as unknown as string }, '24h');
     return {
