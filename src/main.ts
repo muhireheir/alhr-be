@@ -4,11 +4,15 @@ import router from './routes/index.routes'
 import cors from 'cors'
 import { appEnv } from './utils/env'
 import dbConnection from './config/db'
-import { sendEmail } from './utils/mailer'
-
+import session from 'express-session';
 const app = express()
 app.use(express.json())
 app.use(cors())
+app.use(session({
+  secret: appEnv.JWT_SECRET_KEY!,
+  saveUninitialized: false,
+  resave: false
+}))
 app.use(express.static('public'))
 app.use(
   '/api/docs',
