@@ -1,5 +1,5 @@
 import { IUserModel } from './../types/common';
-import { IJobPost, createJobDto } from "../types/dto/jobpost";
+import { IJobPost, UpdateJobPostDto, createJobDto } from "../types/dto/jobpost";
 import { jobPost } from '../models/JobPost';
 import { HttpError } from '../utils/misc/HttpError';
 
@@ -34,8 +34,14 @@ class JobPostService {
     return removePostResult;
   }
 
-
-
+  public static async updateJobPost(id: string, data: UpdateJobPostDto): Promise<IJobPost> {
+    const getPost = await jobPost.findById(id);
+    if (!getPost) {
+      throw new HttpError(400, "Job post not found")
+    }
+    const updatedPost = await jobPost.findOneAndUpdate({ _id: id }, { ...data }, { new: true })
+    return updatedPost as unknown as IJobPost
+  }
 }
 
 export default JobPostService;

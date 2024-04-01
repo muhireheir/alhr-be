@@ -8,10 +8,11 @@ import {
   Security,
   Tags,
   Path,
-  Delete
+  Delete,
+  Patch
 } from 'tsoa'
 import { IUserModel } from '../types/common'
-import { IJobPost, createJobDto } from '../types/dto/jobpost'
+import { IJobPost, UpdateJobPostDto, createJobDto } from '../types/dto/jobpost'
 import JobPostService from '../services/jobsPosts.service'
 @Tags('Job posts')
 @Route('api/jobPosts')
@@ -33,5 +34,9 @@ export class JobPostsController extends Controller {
   @Delete('/{id}')
   public static async deleteJobPost(@Path() id: string): Promise<IJobPost> {
     return JobPostService.deleteJobPost(id)
+  }
+  @Patch('/{id}')
+  public static async updateJobPost(@Path() id: string, @Body() jobPost: UpdateJobPostDto): Promise<IJobPost> {
+    return JobPostService.updateJobPost(id, jobPost)
   }
 }

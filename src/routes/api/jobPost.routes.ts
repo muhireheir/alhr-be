@@ -38,5 +38,13 @@ jobPostsRouter.delete("/:id", async (req: Request, res: Response, next: NextFunc
     return next(error);
   }
 })
+jobPostsRouter.patch("/:id", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const jobPost = await JobPostsController.updateJobPost(req.params.id, req.body);
+    return res.json(jobPost);
+  } catch (error) {
+    return next(error);
+  }
+})
 
 export default jobPostsRouter

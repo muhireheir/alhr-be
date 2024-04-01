@@ -15,3 +15,4 @@ export interface IJobPost {
 
 type CreateJobType = Omit<IJobPost, 'postedBy' | '_id'>
 export interface createJobDto extends CreateJobType { }
+export type UpdateJobPostDto = Partial<createJobDto>

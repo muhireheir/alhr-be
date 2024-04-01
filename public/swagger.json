@@ -177,6 +177,42 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"Partial_createJobDto_": {
+				"properties": {
+					"title": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"requirements": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"responsibilities": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"location": {
+						"type": "string"
+					},
+					"employmentType": {
+						"type": "string"
+					},
+					"applicationDeadline": {
+						"type": "string"
+					}
+				},
+				"type": "object",
+				"description": "Make all properties in T optional"
+			},
+			"UpdateJobPostDto": {
+				"$ref": "#/components/schemas/Partial_createJobDto_"
+			},
 			"createAccountDto": {
 				"properties": {
 					"firstName": {
@@ -428,6 +464,49 @@
 						}
 					}
 				]
+			},
+			"patch": {
+				"operationId": "UpdateJobPost",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IJobPost"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Job posts"
+				],
+				"security": [
+					{
+						"jwtAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateJobPostDto"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/api/auth/signup": {
