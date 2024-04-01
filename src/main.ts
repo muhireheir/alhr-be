@@ -5,6 +5,7 @@ import cors from 'cors'
 import { appEnv } from './utils/env'
 import dbConnection from './config/db'
 import session from 'express-session';
+import { HttpError } from './utils/misc/HttpError'
 const app = express()
 app.use(express.json())
 app.use(cors())
@@ -25,6 +26,9 @@ app.use(
 )
 app.use(router)
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  if (err instanceof HttpError) {
+    return res.status(err.status).json({ error: err.message });
+  }
   return res.status(500).json({ error: err.message });
 })
 void dbConnection().then(() => {
