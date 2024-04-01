@@ -5,6 +5,7 @@ import cors from 'cors'
 import { appEnv } from './utils/env'
 import dbConnection from './config/db'
 import session from 'express-session';
+import { HttpError } from './utils/misc/HttpError'
 const app = express()
 app.use(express.json())
 app.use(cors())
