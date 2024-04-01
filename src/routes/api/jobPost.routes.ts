@@ -8,12 +8,27 @@ const jobPostsRouter = Router()
 
 jobPostsRouter.post("/", validate(jobPostSchema), async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const jobPosts = await JobPostsController.createJobPost(req.body, req.user as IUserModel);
+    const jobPost = await JobPostsController.createJobPost(req.body, req.user as IUserModel);
+    return res.json(jobPost);
+  } catch (error) {
+    return next(error);
+  }
+})
+jobPostsRouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const jobPosts = await JobPostsController.getAllJobPost();
     return res.json(jobPosts);
   } catch (error) {
     return next(error);
   }
-
+})
+jobPostsRouter.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const jobPost = await JobPostsController.getJobPost(req.params.id);
+    return res.json(jobPost);
+  } catch (error) {
+    return next(error);
+  }
 })
 
 export default jobPostsRouter

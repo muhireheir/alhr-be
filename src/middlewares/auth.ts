@@ -9,18 +9,17 @@ import { verifyToken } from "../utils/jwt";
 export const checkBearerToken = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    throw new HttpError(401, 'Access token not provided')
+    return res.status(401).json({ message: "Access token not provided" })
   }
   try {
     const data = await verifyToken(authHeader.split(" ")[1]);
     const user = await User.findById(data.accountId);
     if (!user) {
-      throw new HttpError(401, "Unauthorized")
+      return res.status(401).json({ message: "Unauthoried" })
     }
-    console.log(user);
     req.user = user;
   } catch (error) {
-    throw new HttpError(500, "Failed to authenticate")
+    return res.status(500).json({ message: "Unauthoried" })
   }
   return next();
 };
