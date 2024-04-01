@@ -4,6 +4,7 @@ import validate from '../../middlewares/validator';
 import createAccountSchema, { loginSchema } from '../../utils/schemas/auth.schemas';
 import { IUserModel } from '../../types/common';
 import { checkBearerToken } from '../../middlewares/auth';
+import { appEnv } from '../../utils/env';
 const authRouter = Router()
 authRouter.post('/signup', validate(createAccountSchema), async (req, res, next) => {
   try {
@@ -16,7 +17,8 @@ authRouter.post('/signup', validate(createAccountSchema), async (req, res, next)
 authRouter.get('/verify', async (req: Request, res, next) => {
   try {
     const result = await AuthController.verifyAccount(req.query.token as string);
-    return res.json(result);
+    const url = `${appEnv.FRONTEND_URL}/auth/redirect?token=${result.token}`;
+    return res.redirect(url);
   } catch (error) {
     return next(error)
   }
