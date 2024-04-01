@@ -1,9 +1,10 @@
 import { User } from "../models/User";
-import { IMessageResponse } from "../types/common";
+import { IMessageResponse, IUserModel } from "../types/common";
 import { LoginDto, LoginResponseDto, VerifyAccountResponseDto, createAccountDto } from "../types/dto/auth.dto";
 import { appEnv } from "../utils/env";
 import { generateToken, verifyToken } from "../utils/jwt";
 import { sendEmail } from "../utils/mailer";
+import { HttpError } from "../utils/misc/HttpError";
 import { generatePassword, passwordsMatch } from "../utils/password";
 import UserService from "./user.service";
 import { Profile } from "passport";
@@ -22,16 +23,20 @@ class AuthService {
   }
   public static async verifyAccount(token: string | undefined): Promise<VerifyAccountResponseDto> {
     if (!token) {
-      return { success: false, token: null, message: "Token is required" }
+      throw new HttpError(400, "Token is required");
     }
     const accountInfo = await verifyToken(token);
     const user = await User.findById(accountInfo.accountId);
     if (!user) {
-      return { success: false, token: null, message: "Invalid verification link" }
+      throw new HttpError(400, "Invalid verification link");
     }
     await User.updateOne({ _id: user._id }, { isVerified: true });
     const userToken = await generateToken({ accountId: user._id as unknown as string }, "24h");
-    return { success: true, token: userToken, message: 'Verified successfuly' }
+    return {
+      success: true, token: userToken, message: 'Verified successfuly', firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+    }
   }
   public static async sendVerificationEmail(email: string, id: string): Promise<void> {
     const token = await generateToken({ accountId: id as unknown as string }, "2h");
@@ -50,6 +55,9 @@ class AuthService {
     }
     const accessToken = await generateToken({ accountId: user._id as unknown as string }, '24h');
     return {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
       token: accessToken
     }
   }
@@ -77,6 +85,22 @@ class AuthService {
     }
     const accessToken = await generateToken({ accountId: user._id as unknown as string }, '24h');
     return {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      token: accessToken
+    }
+  }
+  public static async getMe(data: IUserModel): Promise<LoginResponseDto> {
+    const user = await UserService.getUserByEmail(data.email!);
+    const accessToken = await generateToken({ accountId: data._id as unknown as string }, '24h');
+    if (!user) {
+      throw new Error("Opps authentication failed")
+    }
+    return {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
       token: accessToken
     }
   }

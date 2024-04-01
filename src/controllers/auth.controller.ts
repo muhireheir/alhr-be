@@ -5,11 +5,12 @@ import {
   Tags,
   Body,
   Get,
-  Query
+  Query,
+  Inject
 } from 'tsoa'
 import { LoginDto, LoginResponseDto, VerifyAccountResponseDto, createAccountDto } from '../types/dto/auth.dto'
 import AuthService from '../services/auth.service';
-import { IMessageResponse } from '../types/common';
+import { IMessageResponse, IUserModel } from '../types/common';
 interface Ic {
   name: string
 }
@@ -28,5 +29,9 @@ export class AuthController extends Controller {
   @Post("/login")
   public static async login(@Body() data: LoginDto): Promise<LoginResponseDto> {
     return (await AuthService.login(data))
+  }
+  @Get("/me")
+  public static async profile(@Inject() user: IUserModel): Promise<LoginResponseDto> {
+    return (await AuthService.getMe(user))
   }
 }
