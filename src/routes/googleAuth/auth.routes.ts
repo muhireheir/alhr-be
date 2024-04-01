@@ -20,16 +20,15 @@ passport.use(
   ),
 );
 passport.serializeUser((user, cb) => {
-  console.log("opps", user);
   cb(null, user)
 });
 socialAuthRouter.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 socialAuthRouter.get('/redirect/google', passport.authenticate('google'), async (req, res, next) => {
   try {
-    console.log("userrrr ", req.user);
     const user = req.user as IUserModel;
     const result = await AuthService.LoginWithGoogle(user.email);
-    return res.json(result);
+    const url = `${appEnv.FRONTEND_URL}/auth/redirect?token=${result.token}`;
+    return res.redirect(url);
   } catch (error) {
     return next(error);
   }

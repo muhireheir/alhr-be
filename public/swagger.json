@@ -367,6 +367,15 @@
 						"type": "string",
 						"nullable": true
 					},
+					"firstName": {
+						"type": "string"
+					},
+					"lastName": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
 					"success": {
 						"type": "boolean"
 					},
@@ -376,6 +385,9 @@
 				},
 				"required": [
 					"token",
+					"firstName",
+					"lastName",
+					"email",
 					"success",
 					"message"
 				],
@@ -387,10 +399,22 @@
 					"token": {
 						"type": "string",
 						"nullable": true
+					},
+					"firstName": {
+						"type": "string"
+					},
+					"lastName": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
 					}
 				},
 				"required": [
-					"token"
+					"token",
+					"firstName",
+					"lastName",
+					"email"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -896,6 +920,28 @@
 						}
 					}
 				}
+			}
+		},
+		"/api/auth/me": {
+			"get": {
+				"operationId": "Profile",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/LoginResponseDto"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Authentication"
+				],
+				"security": [],
+				"parameters": []
 			}
 		}
 	},

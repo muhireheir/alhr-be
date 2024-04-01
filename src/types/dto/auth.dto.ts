@@ -6,7 +6,10 @@ export interface createAccountDto extends IUser {
 }
 
 export interface LoginResponseDto {
-  token: string | null
+  token: string | null,
+  firstName: string;
+  lastName: string;
+  email: string
 }
 export interface LoginDto {
   email: string;
