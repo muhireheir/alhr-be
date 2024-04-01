@@ -7,7 +7,8 @@ import {
   Route,
   Security,
   Tags,
-  Path
+  Path,
+  Delete
 } from 'tsoa'
 import { IUserModel } from '../types/common'
 import { IJobPost, createJobDto } from '../types/dto/jobpost'
@@ -27,5 +28,10 @@ export class JobPostsController extends Controller {
   @Get('/{id}')
   public static async getJobPost(@Path() id: string): Promise<IJobPost> {
     return JobPostService.getJobPost(id)
+  }
+
+  @Delete('/{id}')
+  public static async deleteJobPost(@Path() id: string): Promise<IJobPost> {
+    return JobPostService.deleteJobPost(id)
   }
 }

@@ -1,3 +1,4 @@
+
 import { IUser } from "../common";
 
 export interface IJobPost {
